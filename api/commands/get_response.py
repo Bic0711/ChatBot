@@ -9,7 +9,7 @@ from utils.misc.param_setup import param_setup
 from utils.misc.send_info_from_responce import send_info
 
 # from utils.misc.show_movie import send_info
-
+Count = 0
 API_KEY = os.getenv("KINOPOISK_API_KEY")
 HEADERS = {
     "accept": "application/json",
@@ -21,11 +21,22 @@ chosen_actor = 111
 
 
 def get_response(message, search_type, params):
+    global Count
+    Count += 1
     response = None
     if search_type in ("genre", "year", "country", "random","movie"):
         response = requests.get(f"{BASE_URL}movie/random", headers=HEADERS, params=params)
     elif search_type == "actor":
         response = requests.get(f"{BASE_URL}person/search", headers=HEADERS, params=params)
+    # try:
+    #     Count += 1
+    #     for i in response.json()["docs"]:
+    #         print(i)
+    #         print()
+    #         print()
+    # except:
+    #     print("|"*20)
+    #     print(response.json())
     object_info = get_info_from_response(message, response.json(), search_type)
     return object_info
 
@@ -59,17 +70,14 @@ def get_info_from_response(message, response, search_type):
 @bot.message_handler(state=UserInfoState.chose_actor)
 def handle_response(message: Message):
     chat_id = message.chat.id
-    actor_id = user_data.get(chat_id, {}).get('actor_id')  # Извлекаем actor_id
-
+    actor_id = user_data.get(chat_id, {}).get('actor_id')
     if message.text == 'Да':
         params = param_setup(search_type="by_actor", search_info=actor_id)
         movie_info = get_response(message=message, search_type="movie", params=params)
         send_info(message, movie_info)
     elif message.text == 'Нет':
-        # Получаем сохраненный итератор из user_data
         actor_iter = user_data.get(chat_id, {}).get('actor_iter')
         if actor_iter is None:
-            # Если итератора нет, создаем новый
             actors_dict = {
                 123: ("Имя актера 1", "https://example.com/photo1.jpg"),
                 456: ("Имя актера 2", "https://example.com/photo2.jpg")
@@ -78,9 +86,9 @@ def handle_response(message: Message):
             user_data[chat_id] = {'actor_iter': actor_iter}  # Сохраняем итератор
 
         send_actors_photo(chat_id, actor_iter)
-    else:
-        bot.send_message(chat_id, 'Пожалуйста, ответьте "Да" или "Нет".')
-
+        bot.send_message(chat_id, "Не нашли актера! Попробуйте еще раз ввести его имя:")
+        bot.register_next_step_handler(message, handle_new_search)
+        
 
 def send_actors_photo(chat_id, actor_iter):
     try:
@@ -96,3 +104,20 @@ def send_actors_photo(chat_id, actor_iter):
         # Удаляем итератор из user_data, так как актеры закончились
         if chat_id in user_data:
             del user_data[chat_id]['actor_iter']
+
+def handle_new_search(message):
+    # код для обработки нового поиска
+    search_type = message.text.lower()
+    if search_type.startswith("актер"):
+        search_type = "by_actor"
+    elif search_type.startswith("жанр"):
+        search_type = "by_genre"
+    elif search_type.startswith("страна"):
+        search_type = "by_country"
+    elif search_type.startswith("год"):
+        search_type = "by_year"
+    # добавить еще условия для других типов поиска
+    params = param_setup(search_type, message.text)
+    movie_info = get_response(message=message, search_type="movie", params=params)
+    send_info(message, movie_info)
+    bot.register_next_step_handler(message, handle_response)

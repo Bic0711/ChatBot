@@ -12,3 +12,7 @@ DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку")
 )
+
+
+git remote rename origin gitlab
+git remote add origin https://github.com/Bic0711/ChatBot
