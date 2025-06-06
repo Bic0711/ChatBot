@@ -1,1 +1,1 @@
-from . import yes_or_no
+"""Placeholder for keyboards/reply/__init__.py."""

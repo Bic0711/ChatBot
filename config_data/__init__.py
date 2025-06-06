@@ -1,1 +1,1 @@
-from . import config
+"""Placeholder for config_data/__init__.py."""
