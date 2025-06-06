@@ -1,2 +1,1 @@
-from . import custom_handlers
-from . import default_handlers
+"""Placeholder for handlers/__init__.py."""

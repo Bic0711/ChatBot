@@ -1,2 +1,1 @@
-from . import inline
-from . import reply
+"""Placeholder for keyboards/__init__.py."""

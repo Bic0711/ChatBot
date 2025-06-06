@@ -1,1 +1,1 @@
-from . import get_response
+"""Placeholder for api/commands/__init__.py."""
