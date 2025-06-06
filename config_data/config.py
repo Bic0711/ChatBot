@@ -1,18 +1,3 @@
-import os
-from dotenv import load_dotenv, find_dotenv
-
-if not find_dotenv():
-    exit("Переменные окружения не загружены т.к отсутствует файл .env")
-else:
-    load_dotenv()
-
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-RAPID_API_KEY = os.getenv("RAPID_API_KEY")
-DEFAULT_COMMANDS = (
-    ("start", "Запустить бота"),
-    ("help", "Вывести справку")
-)
-
-
-git remote rename origin gitlab
-git remote add origin https://github.com/Bic0711/ChatBot
+BOT_TOKEN = "7221537910:AAEZ3e7HrRwj24SXGKg3wJG83Uy_pu6FAmo"
+RAPID_API_KEY = "В1J3B5C3-H854KB0-H6005YA-GJYKGNX"
+KINOPOISK_API_KEY = "1J3B5C3-H854KB0-H6005YA-GJYKGNX"

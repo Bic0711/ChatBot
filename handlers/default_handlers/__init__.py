@@ -1,3 +1,1 @@
-from . import start
-from . import help
-from . import echo
+"""Placeholder for handlers/default_handlers/__init__.py."""

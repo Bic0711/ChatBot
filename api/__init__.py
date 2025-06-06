@@ -1,1 +1,1 @@
-from . import commands
+"""Placeholder for api/__init__.py."""
